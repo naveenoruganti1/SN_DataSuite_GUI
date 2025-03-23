@@ -1,65 +1,73 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import CodeMirror from "@uiw/react-codemirror";
-import { xml } from "@codemirror/lang-xml";
 import { oneDark } from "@codemirror/theme-one-dark";
+import vkbeautify from "vkbeautify";
 
-const Body = () => {
-  const [xmlInput, setXmlInput] = useState("");
-  const [formattedXml, setFormattedXml] = useState("");
+const Body = ({ selectedValue }) => {
   const [tabSpace, setTabSpace] = useState(2);
-
-  const formatXml = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [formattedValue, setFormattedValue] = useState("");
+  useEffect(() => {
+    setInputValue("");
+    setFormattedValue("");
+  }, [selectedValue]);
+  const handleFormat = () => {
     try {
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(xmlInput, "application/xml");
-      const serializer = new XMLSerializer();
-      let formatted = serializer.serializeToString(xmlDoc);
-      console.log(formatted);
-      formatted = formatted.replace(/></g, `>\n${" ".repeat(tabSpace)}`);
-      setFormattedXml(formatted);
+      if (selectedValue === "json") {
+        const parsedJson = JSON.parse(inputValue);
+        const formatted = vkbeautify.json(JSON.stringify(parsedJson), tabSpace);
+        setFormattedValue(formatted);
+      } else if (selectedValue === "xml") {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(inputValue, "application/xml");
+        const errorNode = xmlDoc.getElementsByTagName("parsererror");
+        if (errorNode.length) {
+          alert("Invalid XML. Please check your input.");
+          return;
+        }
+  
+        const formatted = vkbeautify.xml(inputValue, tabSpace);
+        setFormattedValue(formatted);
+      }
     } catch (error) {
-      alert(error);
+      alert(`Invalid ${selectedValue.toUpperCase()}! Please check your input.`);
     }
   };
-
   return (
     <Container fluid>
       <Row>
         <Col md={5}>
-          <h5>Input XML</h5>
+          <h5>Input {selectedValue.toUpperCase()}</h5>
           <CodeMirror
-            value={xmlInput}
+            value={inputValue}
             height="500px"
-            extensions={[xml()]}
+            options={{ mode: selectedValue === "json" ? "application/json" : "application/xml", lineNumbers: true }}
             theme={oneDark}
-            onChange={(value) => setXmlInput(value)}
+            onChange={(value) => setInputValue(value)}
           />
         </Col>
-        <Col
-          md={2}
-          className="d-flex flex-column align-items-center bg-success p-3"
-        >
-          <Button onClick={formatXml} className="mb-2">
-            Format / Beautify
+        <Col md={2} className="d-flex flex-column align-items-center bg-success p-3">
+          <Button onClick={handleFormat} className="mb-2">
+            Format {selectedValue}
           </Button>
           <Form.Select
             value={tabSpace}
             onChange={(e) => setTabSpace(Number(e.target.value))}
           >
             <option value={2}>2 Tab Space</option>
+            <option value={3}>3 Tab Space</option>
             <option value={4}>4 Tab Space</option>
           </Form.Select>
         </Col>
         <Col md={5}>
-          <h5>Formatted XML</h5>
+          <h5>Formatted {selectedValue.toUpperCase()}</h5>
           <CodeMirror
-            value={formattedXml}
+            value={formattedValue}
             height="500px"
-            extensions={[xml()]}
+            options={{ mode: selectedValue === "json" ? "application/json" : "application/xml", lineNumbers: true, readOnly: true }}
             theme={oneDark}
             editable={false}
-            onChange={(value) => setXmlInput(value)}
           />
         </Col>
       </Row>

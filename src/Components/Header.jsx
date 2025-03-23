@@ -1,11 +1,18 @@
-import React from "react";
+import {React, useState} from "react";
 import { Navbar, Nav, Button, Stack, Container } from "react-bootstrap";
 import JsonDropDown from "./JsonDropDown.jsx";
 import XmlDropDown from "./XmlDropDown.jsx";
 import Logo from "./Logo.jsx";
+import Body from "./Body.jsx";
 
 function Header() {
+  const [selectedValue, setSelectedValue] = useState("json");
+
+  const handleNavClick = (value) => {
+    setSelectedValue(value);
+  };
   return (
+    <>
     <Navbar
       bg="primary"
       variant="dark"
@@ -25,13 +32,13 @@ function Header() {
             </Navbar.Brand>
           </Stack>
           <Stack direction="horizontal" gap={5}>
-            <Nav.Link href="#home" className="text-light">
+            <Nav.Link onClick={() => handleNavClick("json")} className="text-light">
               Home
             </Nav.Link>
-            <Nav.Link href="#home" className="text-light">
+            <Nav.Link onClick={() => handleNavClick("json")} className="text-light">
               Json Formatter
             </Nav.Link>
-            <Nav.Link href="#home" className="text-light">
+            <Nav.Link onClick={() => handleNavClick("xml")} className="text-light">
               Xml Formatter
             </Nav.Link>
             <JsonDropDown />
@@ -40,6 +47,8 @@ function Header() {
         </Stack>
       </Container>
     </Navbar>
+    <Body selectedValue={selectedValue} />
+    </>
   );
 }
 
