@@ -6,10 +6,12 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "./index.css";
 import Footer from "./components/Footer.jsx";
 import Header from "./Components/Header.jsx";
+import Body from "./components/Body.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Header />
+    <Body />
 
     <Footer />
   </StrictMode>
