@@ -1,11 +1,13 @@
+import NavDropdown from 'react-bootstrap/NavDropdown';
+
 function XmlDropDown() {
   return (
-    <div>
-      <select name="XML" id="xmldropdown">
-        <option value="validator">Validator</option>
-        <option value="wellFormedness">Well-formedness</option>
-        <option value="conversions">Conversions</option>
-      </select>
+    <div className="p-2">
+      <NavDropdown title="Convert Xml to" id="xml-actions" className="bg-dropdown text-white p-2 rounded">
+        <NavDropdown.Item href="#action3">Json</NavDropdown.Item>
+        <NavDropdown.Item href="#action4">Yaml</NavDropdown.Item>
+        <NavDropdown.Item href="#action4">CSV</NavDropdown.Item>
+      </NavDropdown>
     </div>
   );
 }
