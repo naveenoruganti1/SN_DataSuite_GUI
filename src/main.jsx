@@ -11,7 +11,7 @@ import Body from "./components/Body.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Header />
-    <Body />
+    {/* <Body /> */}
 
     <Footer />
   </StrictMode>
