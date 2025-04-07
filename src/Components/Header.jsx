@@ -1,16 +1,25 @@
-import {React, useState} from "react";
+import {React, useEffect, useState} from "react";
 import { Navbar, Nav, Button, Stack, Container } from "react-bootstrap";
 import JsonDropDown from "./JsonDropDown.jsx";
 import XmlDropDown from "./XmlDropDown.jsx";
 import Logo from "./Logo.jsx";
-import Body from "./Body.jsx";
 
-function Header() {
-  const [selectedValue, setSelectedValue] = useState("json");
+function Header({setSelectedValue, validateInput, 
+          inputPayload, setFormattedValue}) {
+  const [isJsonDisabled, setIsJsonDisabled] = useState(false);
 
   const handleNavClick = (value) => {
     setSelectedValue(value);
+    if(value === "xml"){
+      setIsJsonDisabled(true);
+    }else{
+      setIsJsonDisabled(false);
+    }
   };
+  useEffect(() => {
+      //Clearing the values when the selected value changes
+      setSelectedValue("json");
+  }, []);
   return (
     <>
     <Navbar
@@ -41,13 +50,13 @@ function Header() {
             <Nav.Link onClick={() => handleNavClick("xml")} className="text-light">
               Xml Formatter
             </Nav.Link>
-            <JsonDropDown />
-            <XmlDropDown />
+            <JsonDropDown validateInput={validateInput} inputPayload={inputPayload} 
+                          setFormattedValue={setFormattedValue} isJsonDisabled={isJsonDisabled}/>
+            <XmlDropDown/>
           </Stack>
         </Stack>
       </Container>
     </Navbar>
-    <Body selectedValue={selectedValue} />
     </>
   );
 }

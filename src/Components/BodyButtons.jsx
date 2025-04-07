@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Form, Col } from "react-bootstrap";
 
-export default function BodyButtons({ selectedValue, handleFormat, tabSpace, setTabSpace, validateInput, minify }) {
+export default function BodyButtons({ selectedValue, handleFormat, tabSpace, setTabSpace, validateInput, minify, onToggleTree, showTree }) {
     return (
         <Col md={2} className="d-flex flex-column align-items-center bg-success p-3">
             <Button onClick={handleFormat} className="mb-2">
@@ -19,7 +19,12 @@ export default function BodyButtons({ selectedValue, handleFormat, tabSpace, set
                 Validate {selectedValue}
             </Button>
             <Button onClick={minify} className="mt-2">
-                Minify or Compact {selectedValue}
+                Minify {selectedValue}
+            </Button>
+            <Button onClick={()=>{
+                    handleFormat();
+                    onToggleTree();}} className="mt-2">
+                {showTree ? "Show Code View" : "Show Tree View"}
             </Button>
         </Col>
     )

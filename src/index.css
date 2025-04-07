@@ -3,8 +3,14 @@ body{
     font-family: Roboto, Helvetica, Arial, sans-serif;
 }
 .bg-dropdown {
-    background-color: #007bff !important;
+    background-color: #115da0 !important;
 }
 .bg-primary {
-  background-color: black !important;
+  background-color: rgba(0, 0, 0, 0.788) !important;
+}
+.bg-secondary {
+  background-color: #115da0 !important;
+}
+.bg-success {
+  background-color: #6ab67e !important;
 }
