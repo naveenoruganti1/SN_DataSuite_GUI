@@ -1,0 +1,42 @@
+.react-json-view {
+    background-color: #ffffff !important;
+    font-family: "Courier New", Courier, monospace !important;
+    font-size: 14px !important;
+    color: #1a1a1a !important;
+    padding: 10px;
+    border: 1px solid #ddd !important;
+    border-radius: 5px;
+  }
+  
+  /* Keys */
+  .react-json-view span.object-key {
+    color: #1c00cf !important; /* blue */
+  }
+  
+  /* Strings */
+  .react-json-view span.string-value {
+    color: #c41a16 !important; /* red */
+  }
+  
+  /* Booleans */
+  .react-json-view span.boolean-value {
+    color: #aa0d91 !important; /* purple */
+  }
+  
+  /* Nulls */
+  .react-json-view span.null-value {
+    color: #808080 !important;
+    font-style: italic !important;
+  }
+  
+  /* Numbers */
+  .react-json-view span.number-value {
+    color: #1a1aa6 !important;
+  }
+  
+  /* Icons (collapse/expand) */
+  .react-json-view span.collapsed-icon,
+  .react-json-view span.expanded-icon {
+    color: #888 !important;
+  }
+  
