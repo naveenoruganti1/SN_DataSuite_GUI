@@ -14,7 +14,7 @@ function App() {
   const [inputPayload, setInputPayload] = useState("");
   const [showTreeView, setShowTreeView] = useState(false);
   const [parsedData, setParsedData] = useState(null);
-  const [jsonDropDownVal, setJsonDropDownVal] = useState("json");
+  const [dropDownVal, setDropDownVal] = useState("json");
 
   const validateInput = () => {
     try {
@@ -75,13 +75,13 @@ function App() {
     <StrictMode>
       <Header setSelectedValue={setSelectedValue} validateInput={validateInput} 
               inputPayload={inputPayload} setFormattedValue={setFormattedValue}
-              setJsonDropDownVal={setJsonDropDownVal}/>
+              setDropDownVal={setDropDownVal}/>
       <Body validateInput={validateInput} setInputPayload={setInputPayload} 
             selectedValue={selectedValue} inputPayload={inputPayload}
             formattedValue={formattedValue} setFormattedValue={setFormattedValue}
             parsedData={parsedData} setParsedData={setParsedData}
             showTreeView={showTreeView} setShowTreeView={setShowTreeView}
-            jsonDropDownVal={jsonDropDownVal}/>
+            dropDownVal={dropDownVal}/>
       <Footer />
     </StrictMode>
   );
