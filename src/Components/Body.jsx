@@ -24,7 +24,8 @@ const Body = ({
   parsedData,
   setParsedData,
   showTreeView,
-  setShowTreeView
+  setShowTreeView,
+  jsonDropDownVal
 }) => {
   const [tabSpace, setTabSpace] = useState(2);
   const [cursorPosition, setCursorPosition] = useState({ line: 1, ch: 1 });
@@ -91,8 +92,12 @@ const Body = ({
   };
 
   const handleDownload = () => {
+    if (formattedValue === "") {
+      alert("No formatted output to download.");
+      return;
+    }
     const blob = new Blob([formattedValue], { type: "text/plain;charset=utf-8" });
-    const fileType = selectedValue === "json" ? "json" : "xml";
+    const fileType = jsonDropDownVal;
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `formatted-output.${fileType}`;
