@@ -9,7 +9,7 @@ const JsonDropDown = ({
     inputPayload, 
     setFormattedValue, 
     isJsonDisabled,
-    setJsonDropDownVal
+    setDropDownVal
   }) => {
         const [showModal, setShowModal] = useState(false);
         const [errorMessage, setErrorMessage] = useState("");
@@ -27,7 +27,7 @@ const JsonDropDown = ({
     }
 
     try {
-      setJsonDropDownVal(eventKey);
+      setDropDownVal(eventKey);
       if (eventKey === "xml") {
         const response = await convertJSONToXml(inputPayload);
         if (response.success) {

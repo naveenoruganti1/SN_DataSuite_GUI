@@ -6,20 +6,24 @@ import Logo from "./Logo.jsx";
 
 function Header({setSelectedValue, validateInput, 
           inputPayload, setFormattedValue,
-          setJsonDropDownVal}) {
+          setDropDownVal}) {
   const [isJsonDisabled, setIsJsonDisabled] = useState(false);
+  const [isXmlDisabled, setIsXmlDisabled] = useState(false);
 
   const handleNavClick = (value) => {
     setSelectedValue(value);
     if(value === "xml"){
       setIsJsonDisabled(true);
+      setIsXmlDisabled(false);
     }else{
       setIsJsonDisabled(false);
+      setIsXmlDisabled(true);
     }
   };
   useEffect(() => {
       //Clearing the values when the selected value changes
       setSelectedValue("json");
+      setIsXmlDisabled(true);
   }, []);
   return (
     <>
@@ -53,8 +57,10 @@ function Header({setSelectedValue, validateInput,
             </Nav.Link>
             <JsonDropDown validateInput={validateInput} inputPayload={inputPayload} 
                           setFormattedValue={setFormattedValue} isJsonDisabled={isJsonDisabled}
-                          setJsonDropDownVal ={setJsonDropDownVal}/>
-            <XmlDropDown/>
+                          setDropDownVal ={setDropDownVal}/>
+            <XmlDropDown validateInput={validateInput} inputPayload={inputPayload} 
+                          setFormattedValue={setFormattedValue} isXmlDisabled={isXmlDisabled}
+                          setDropDownVal ={setDropDownVal}/>
           </Stack>
         </Stack>
       </Container>

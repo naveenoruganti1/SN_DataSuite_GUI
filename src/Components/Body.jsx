@@ -25,7 +25,7 @@ const Body = ({
   setParsedData,
   showTreeView,
   setShowTreeView,
-  jsonDropDownVal
+  dropDownVal
 }) => {
   const [tabSpace, setTabSpace] = useState(2);
   const [cursorPosition, setCursorPosition] = useState({ line: 1, ch: 1 });
@@ -88,6 +88,33 @@ const Body = ({
       setFormattedValue(formattedSample);
       setParsedData(null);
       setShowTreeView(false);
+    }else if(selectedValue === "xml"){
+      const samplexml = `
+      <employees>
+    <employee>
+      <id>1</id>
+      <firstName>Tom</firstName>
+      <lastName>Cruise</lastName>
+      <photo>https://jsonformatter.org/img/tom-cruise.jpg</photo>
+    </employee>
+    <employee>
+      <id>2</id>
+      <firstName>Maria</firstName>
+      <lastName>Sharapova</lastName>
+      <photo>https://jsonformatter.org/img/Maria-Sharapova.jpg</photo>
+    </employee>
+    <employee>
+      <id>3</id>
+      <firstName>Robert</firstName>
+      <lastName>Downey Jr.</lastName>
+      <photo>https://jsonformatter.org/img/Robert-Downey-Jr.jpg</photo>
+    </employee>
+  </employees>`;
+      const formattedSample = vkbeautify.xml(samplexml, tabSpace);
+      setInputPayload(formattedSample);
+      setFormattedValue(formattedSample);
+      setParsedData(null);
+      setShowTreeView(false);
     }
   };
 
@@ -97,7 +124,7 @@ const Body = ({
       return;
     }
     const blob = new Blob([formattedValue], { type: "text/plain;charset=utf-8" });
-    const fileType = jsonDropDownVal;
+    const fileType = dropDownVal;
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `formatted-output.${fileType}`;
@@ -288,9 +315,7 @@ const Body = ({
           <div style={ribbonStyleFullWidth}>
             <IconWithTooltip icon={faCopy} tooltipText="Copy Input" onClick={handleCopy} />
             <IconWithTooltip icon={faPaste} tooltipText="Paste from Clipboard" onClick={handlePaste} />
-            {selectedValue === "json" && (
-              <IconWithTooltip icon={faFileLines} tooltipText="Load Sample JSON" onClick={handleLoadSample} />
-            )}
+            <IconWithTooltip icon={faFileLines} tooltipText="Load Sample Data" onClick={handleLoadSample} />
             <IconWithTooltip
               icon={faCog}  // Use the gear icon for settings
               tooltipText="Fix minor errors like trailing commas, indentations etc."
