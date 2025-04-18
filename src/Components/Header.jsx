@@ -5,7 +5,8 @@ import XmlDropDown from "./XmlDropDown.jsx";
 import Logo from "./Logo.jsx";
 
 function Header({setSelectedValue, validateInput, 
-          inputPayload, setFormattedValue}) {
+          inputPayload, setFormattedValue,
+          setJsonDropDownVal}) {
   const [isJsonDisabled, setIsJsonDisabled] = useState(false);
 
   const handleNavClick = (value) => {
@@ -51,7 +52,8 @@ function Header({setSelectedValue, validateInput,
               Xml Formatter
             </Nav.Link>
             <JsonDropDown validateInput={validateInput} inputPayload={inputPayload} 
-                          setFormattedValue={setFormattedValue} isJsonDisabled={isJsonDisabled}/>
+                          setFormattedValue={setFormattedValue} isJsonDisabled={isJsonDisabled}
+                          setJsonDropDownVal ={setJsonDropDownVal}/>
             <XmlDropDown/>
           </Stack>
         </Stack>
