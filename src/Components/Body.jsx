@@ -3,7 +3,7 @@ import { Container, Row, Col, OverlayTrigger, Tooltip } from "react-bootstrap";
 import CodeMirror from "@uiw/react-codemirror";
 import { eclipse } from "@uiw/codemirror-theme-eclipse";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faPaste, faFileLines, faDownload, faUndo, faRedo, faCog, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faPaste, faFileLines, faDownload, faUndo, faRedo, faCog, faTimesCircle, faAlignLeft } from "@fortawesome/free-solid-svg-icons";
 import vkbeautify from "vkbeautify";
 import { EditorView } from "@codemirror/view";
 import { EditorState, Annotation } from "@codemirror/state";
@@ -11,8 +11,11 @@ import { history, undo, redo } from "@codemirror/commands";
 import BodyButtons from "./BodyButtons.jsx";
 import { xml } from "@codemirror/lang-xml";
 import { json } from "@codemirror/lang-json";
+import { yaml as yamlMode } from "@codemirror/legacy-modes/mode/yaml";
+import { StreamLanguage } from "@codemirror/language";
 import ReactJson from "react-json-view";
 import "../reactJsonTheme.css";
+import * as yamlV from 'yaml';
 
 const Body = ({
   validateInput,
@@ -31,6 +34,7 @@ const Body = ({
   const [cursorPosition, setCursorPosition] = useState({ line: 1, ch: 1 });
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
+  const [wrapLines, setWrapLines] = useState(false);
   const inputAnnotation = Annotation.define();
   const editorViewRef = useRef(null);
 
@@ -91,30 +95,52 @@ const Body = ({
     }else if(selectedValue === "xml"){
       const samplexml = `
       <employees>
-    <employee>
-      <id>1</id>
-      <firstName>Tom</firstName>
-      <lastName>Cruise</lastName>
-      <photo>https://jsonformatter.org/img/tom-cruise.jpg</photo>
-    </employee>
-    <employee>
-      <id>2</id>
-      <firstName>Maria</firstName>
-      <lastName>Sharapova</lastName>
-      <photo>https://jsonformatter.org/img/Maria-Sharapova.jpg</photo>
-    </employee>
-    <employee>
-      <id>3</id>
-      <firstName>Robert</firstName>
-      <lastName>Downey Jr.</lastName>
-      <photo>https://jsonformatter.org/img/Robert-Downey-Jr.jpg</photo>
-    </employee>
-  </employees>`;
+        <employee>
+          <id>1</id>
+          <firstName>Tom</firstName>
+          <lastName>Cruise</lastName>
+          <photo>https://jsonformatter.org/img/tom-cruise.jpg</photo>
+        </employee>
+        <employee>
+          <id>2</id>
+          <firstName>Maria</firstName>
+          <lastName>Sharapova</lastName>
+          <photo>https://jsonformatter.org/img/Maria-Sharapova.jpg</photo>
+        </employee>
+        <employee>
+          <id>3</id>
+          <firstName>Robert</firstName>
+          <lastName>Downey Jr.</lastName>
+          <photo>https://jsonformatter.org/img/Robert-Downey-Jr.jpg</photo>
+        </employee>
+      </employees>`;
       const formattedSample = vkbeautify.xml(samplexml, tabSpace);
       setInputPayload(formattedSample);
       setFormattedValue(formattedSample);
       setParsedData(null);
       setShowTreeView(false);
+    }else if (selectedValue === "yaml"){
+      const sampleYaml = 
+`employees:
+  - id: 1
+    firstName: Tom
+    lastName: Cruise
+    photo: https://jsonformatter.org/img/tom-cruise.jpg
+  - id: 2
+    firstName: Maria
+    lastName: Sharapova
+    photo: https://jsonformatter.org/img/Maria-Sharapova.jpg
+  - id: 3
+    firstName: Robert
+    lastName: Downey Jr.
+    photo: https://jsonformatter.org/img/Robert-Downey-Jr.jpg`;
+
+      const formattedSample = vkbeautify.yaml ? vkbeautify.yaml(sampleYaml, tabSpace) : sampleYaml;
+      setInputPayload(formattedSample);
+      setFormattedValue(formattedSample);
+      setParsedData(null);
+      setShowTreeView(false);
+
     }
   };
 
@@ -209,12 +235,57 @@ const Body = ({
     }
   };
       
-
-  const handleCursorChange = (view) => {
-    const cursor = view.state.selection.main.head;
-    const line = view.state.doc.lineAt(cursor);
-    setCursorPosition({ line: line.number, ch: cursor - line.from + 1 });
+  const handleAutoCorrectYaml = () => {
+    try {
+      let correctedYaml = inputPayload;
+  
+      // 1. Standardize list item syntax (-id: → - id:)
+      correctedYaml = correctedYaml.replace(/^(\s*)-(\S)/gm, '$1- $2');
+  
+      // 2. Prepare for indentation correction
+      const lines = correctedYaml.split('\n');
+      let inList = false;
+      let currentIndent = 0;
+  
+      const correctedLines = lines.map((line) => {
+        const trimmed = line.trim();
+  
+        if (!trimmed) return line; // Preserve blank lines
+  
+        const leadingSpaces = line.match(/^\s*/)?.[0].length ?? 0;
+  
+        // Detect list item
+        if (trimmed.startsWith('-')) {
+          inList = true;
+          currentIndent = leadingSpaces;
+          return `${' '.repeat(currentIndent)}${trimmed}`;
+        }
+  
+        // If inside a list, indent properties properly
+        if (inList && trimmed.includes(':')) {
+          return `${' '.repeat(currentIndent + 2)}${trimmed}`;
+        }
+  
+        return line;
+      });
+  
+      correctedYaml = correctedLines.join('\n');
+  
+      // 3. Try parsing YAML
+      const parsed = yamlV.parse(correctedYaml);
+  
+      // 4. Reformat it nicely
+      const formatted = yamlV.stringify(parsed, { indent: 2 });
+  
+      // 5. Update the state
+      setInputPayload(formatted);
+      setFormattedValue(formatted);
+      setParsedData(parsed);
+    } catch (error) {
+      setFormattedValue(`YAML Error:\n${error.message}`);
+    }
   };
+  
 
   const handleFormat = () => {
     const { isValid, error } = validateInput();
@@ -231,6 +302,10 @@ const Body = ({
         setParsedData(parsedJson);
       } else if (selectedValue === "xml") {
         const formatted = vkbeautify.xml(inputPayload, tabSpace);
+        setFormattedValue(formatted);
+      } else if (selectedValue === "yaml") {
+        const parsedData = yamlV.parse(inputPayload);
+        const formatted = yamlV.stringify(parsedData, { indent: tabSpace });
         setFormattedValue(formatted);
       }
     } catch (error) {
@@ -256,6 +331,16 @@ const Body = ({
       } else if (selectedValue === "xml") {
         const xmlMin = vkbeautify.xmlmin(inputPayload, [true]);
         setFormattedValue(xmlMin);
+      } else if (selectedValue === "yaml") {
+        const parsed = yamlV.parse(inputPayload);
+
+        const compact = JSON.stringify(parsed)
+          .replace(/"([^"]+)":/g, '$1:') // remove quotes from keys (optional)
+          .replace(/:"([^"]+)"/g, ':$1') // remove quotes from values (optional)
+          .replace(/\\\//g, '/')  // unescape slashes (optional)
+          .replace(/"/g, "'");  // replace double quotes with single quotes (optional)
+      
+        setFormattedValue(compact);
       }
     } catch (error) {
       setFormattedValue(
@@ -316,11 +401,23 @@ const Body = ({
             <IconWithTooltip icon={faCopy} tooltipText="Copy Input" onClick={handleCopy} />
             <IconWithTooltip icon={faPaste} tooltipText="Paste from Clipboard" onClick={handlePaste} />
             <IconWithTooltip icon={faFileLines} tooltipText="Load Sample Data" onClick={handleLoadSample} />
-            <IconWithTooltip
-              icon={faCog}  // Use the gear icon for settings
-              tooltipText="Fix minor errors like trailing commas, indentations etc."
-              onClick={handleAutoCorrectJson}  // Define the onClick behavior for the settings icon
-            />
+            {(selectedValue === "json" || selectedValue === "yaml") && (
+                <IconWithTooltip
+                  icon={faCog}
+                  tooltipText={
+                    selectedValue === "json"
+                      ? "Fix minor errors like trailing commas, indentations etc."
+                      : "Attempt to fix indentation or structure issues in YAML"
+                  }
+                  onClick={() => {
+                    if (selectedValue === "json") {
+                      handleAutoCorrectJson();
+                    } else if (selectedValue === "yaml") {
+                      handleAutoCorrectYaml();
+                    }
+                  }}
+                />
+            )}
             <IconWithTooltip
               icon={faUndo}
               tooltipText="Undo"
@@ -347,7 +444,11 @@ const Body = ({
               value={inputPayload}
               height="500px"
               extensions={[ 
-                selectedValue === "json" ? json() : xml(),
+                selectedValue === "json"
+                  ? json()
+                  : selectedValue === "yaml"
+                  ? StreamLanguage.define(yamlMode)
+                  : xml(),
                 history(),
                 EditorView.theme({
                   "&": { cursor: "text" },
@@ -391,6 +492,11 @@ const Body = ({
           <div style={ribbonStyleFullWidth}>
             <IconWithTooltip icon={faCopy} tooltipText="Copy Formatted Output" onClick={handleCopyRight} />
             <IconWithTooltip icon={faDownload} tooltipText="Download Formatted Output" onClick={handleDownload} />
+            <IconWithTooltip
+              icon={faAlignLeft}
+              tooltipText="Toggle Word Wrap"
+              onClick={() => setWrapLines(prev => !prev)}
+            />
           </div>
 
           <div style={editorContainerStyle}>
@@ -407,11 +513,16 @@ const Body = ({
                 value={formattedValue}
                 height="500px"
                 extensions={[ 
-                  selectedValue === "json" ? json() : xml(),
+                  selectedValue === "json"
+                    ? json()
+                    : selectedValue === "yaml"
+                    ? StreamLanguage.define(yamlMode)
+                    : xml(),
                   EditorView.theme({
                     "&": { cursor: "text" },
                     ".cm-cursor": { borderLeftColor: "#000 !important" },
                   }),
+                  wrapLines ? EditorView.lineWrapping : []
                 ]}
                 theme={eclipse}
                 editable={false}

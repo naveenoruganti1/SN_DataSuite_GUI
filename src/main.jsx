@@ -7,6 +7,7 @@ import "./index.css";
 import Footer from "./components/Footer.jsx";
 import Header from "./components/Header.jsx";
 import Body from "./components/Body.jsx";
+import yaml from 'js-yaml';
 
 function App() {
   const [formattedValue, setFormattedValue] = useState("");
@@ -42,35 +43,23 @@ function App() {
         }
         setFormattedValue("Valid XML!");
         return { isValid: true };
+      } else if (selectedValue === "yaml") {
+        try {
+          yaml.load(inputPayload); // Attempt to parse YAML
+          setFormattedValue("Valid YAML!");
+          return { isValid: true };
+        } catch (error) {
+          const errorMessage = `Error: ${error.message}`;
+          setFormattedValue(errorMessage);
+          return { isValid: false, error: errorMessage };
+        }
       }
     } catch (error) {
       setFormattedValue(`Invalid ${selectedValue.toUpperCase()}: ${error.message}`);
       return { isValid: false, error: `Invalid ${selectedValue.toUpperCase()}: ${error.message}` };
     }
   };
-  /*const handleJsonConvertionFormat = () => {
-        const { isValid, error } = validateInput();
-    
-        if (!isValid) {
-          setFormattedValue(`Error: ${error}`);
-          return;
-        }
-        try {
-          if (selectedValue === "json" && selectedConversion === "json") {
-            const parsedJson = JSON.parse(inputPayload);
-            const formatted = vkbeautify.json(JSON.stringify(parsedJson), tabSpace);
-            setFormattedValue(formatted);
-          } else if (selectedValue === "json" && selectedConversion === "xml") {
-            const formatted = vkbeautify.xml(inputPayload, tabSpace);
-            setFormattedValue(formatted);
-          }
-        } catch (error) {
-          setFormattedValue(
-            `Invalid ${selectedValue.toUpperCase()}! Please check your input.`
-          );
-        }
-      };*/
-
+  
   return (
     <StrictMode>
       <Header setSelectedValue={setSelectedValue} validateInput={validateInput} 
