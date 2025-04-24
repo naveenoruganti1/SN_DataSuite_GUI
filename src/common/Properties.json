@@ -1,5 +1,6 @@
 {
     "JSON_API_URL": "http://localhost:8081/v1/convert",
-    "XML_API_URL": "http://localhost:8082/v1/convert"
+    "XML_API_URL": "http://localhost:8082/v1/convert",
+    "YAML_API_URL": "http://localhost:8083/v1/convert"
   }
   
