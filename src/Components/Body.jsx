@@ -28,7 +28,8 @@ const Body = ({
   setParsedData,
   showTreeView,
   setShowTreeView,
-  dropDownVal
+  dropDownVal,
+  loading
 }) => {
   const [tabSpace, setTabSpace] = useState(2);
   const [cursorPosition, setCursorPosition] = useState({ line: 1, ch: 1 });
@@ -509,6 +510,7 @@ const Body = ({
                 name={false}
               />
             ) : (
+              <div style={{ position: "relative", minHeight: "500px" }}>
               <CodeMirror
                 value={formattedValue}
                 height="500px"
@@ -527,6 +529,25 @@ const Body = ({
                 theme={eclipse}
                 editable={false}
               />
+              {loading && (
+    <div
+      className="d-flex justify-content-center align-items-center"
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        backgroundColor: "rgba(255, 255, 255, 0.6)", 
+        zIndex: 10
+      }}
+    >
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  )}
+</div>
             )}
           </div>
         </Col>

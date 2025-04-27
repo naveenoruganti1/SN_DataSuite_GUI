@@ -8,7 +8,7 @@ export const convertYamlToXml = async (payLoad) => {
 
     const response = await axios.post(API_URL, payLoad, {
       headers: {
-        'Content-Type': 'application/x-yaml',
+        'Content-Type': 'application/yaml',
       },
     });
 
@@ -30,7 +30,7 @@ export const convertYamlToJson = async (payLoad) => {
   
       const response = await axios.post(API_URL, payLoad, {
         headers: {
-          'Content-Type': 'application/x-yaml',
+          'Content-Type': 'application/yaml',
         },
       });
   
