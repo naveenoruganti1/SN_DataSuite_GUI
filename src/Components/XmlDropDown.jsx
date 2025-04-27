@@ -10,7 +10,8 @@ const XmlDropDown = ({
     inputPayload, 
     setFormattedValue, 
     isXmlDisabled,
-    setDropDownVal
+    setDropDownVal,
+    setLoading
   }) => {
         const [showModal, setShowModal] = useState(false);
         const [errorMessage, setErrorMessage] = useState("");
@@ -29,6 +30,7 @@ const XmlDropDown = ({
   
       try {
         setDropDownVal(eventKey);
+        setLoading(true);
         if (eventKey === "json") {
           const response = await convertXMLToJSON(inputPayload);
           if (response.success) {
@@ -55,6 +57,8 @@ const XmlDropDown = ({
       } catch (error) {
         setErrorMessage(`Error: ${error.message}`);
         setShowModal(true);
+      }finally{
+        setLoading(false);
       }
     };       
   useEffect(() => {

@@ -8,7 +8,8 @@ const YamlDropDown = ({
     inputPayload, 
     setFormattedValue, 
     isYamlDisabled,
-    setDropDownVal
+    setDropDownVal,
+    setLoading
   }) => {
         const [showModal, setShowModal] = useState(false);
         const [errorMessage, setErrorMessage] = useState("");
@@ -27,6 +28,7 @@ const YamlDropDown = ({
 
     try {
       setDropDownVal(eventKey);
+      setLoading(true);
       if (eventKey === "xml") {
         const response = await convertYamlToXml(inputPayload);
         if (response.success) {
@@ -49,6 +51,8 @@ const YamlDropDown = ({
     } catch (error) {
       setErrorMessage(`Error: ${error.message}`);
       setShowModal(true);
+    } finally{
+      setLoading(false);
     }
   };
 

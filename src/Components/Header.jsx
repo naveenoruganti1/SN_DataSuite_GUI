@@ -7,7 +7,7 @@ import Logo from "./Logo.jsx";
 
 function Header({setSelectedValue, validateInput, 
           inputPayload, setFormattedValue,
-          setDropDownVal}) {
+          setDropDownVal,setLoading}) {
   const [isJsonDisabled, setIsJsonDisabled] = useState(false);
   const [isXmlDisabled, setIsXmlDisabled] = useState(false);
   const [isYamlDisabled, setIsYamlDisabled] = useState(false);
@@ -70,13 +70,13 @@ function Header({setSelectedValue, validateInput,
             </Nav.Link>
             <JsonDropDown validateInput={validateInput} inputPayload={inputPayload} 
                           setFormattedValue={setFormattedValue} isJsonDisabled={isJsonDisabled}
-                          setDropDownVal ={setDropDownVal}/>
+                          setDropDownVal ={setDropDownVal} setLoading={setLoading}/>
             <XmlDropDown validateInput={validateInput} inputPayload={inputPayload} 
                           setFormattedValue={setFormattedValue} isXmlDisabled={isXmlDisabled}
-                          setDropDownVal ={setDropDownVal}/>
+                          setDropDownVal ={setDropDownVal} setLoading={setLoading}/>
             <YamlDropDown validateInput={validateInput} inputPayload={inputPayload} 
                           setFormattedValue={setFormattedValue} isYamlDisabled={isYamlDisabled}
-                          setDropDownVal ={setDropDownVal}/>
+                          setDropDownVal ={setDropDownVal} setLoading={setLoading}/>
           </Stack>
         </Stack>
       </Container>
