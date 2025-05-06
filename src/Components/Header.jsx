@@ -4,6 +4,7 @@ import JsonDropDown from "./JsonDropDown.jsx";
 import XmlDropDown from "./XmlDropDown.jsx";
 import YamlDropDown from "./YamlDropDown.jsx";
 import Logo from "./Logo.jsx";
+import { Link } from 'react-router-dom'; // if using React Router
 
 function Header({setSelectedValue, validateInput, 
           inputPayload, setFormattedValue,
@@ -56,7 +57,7 @@ function Header({setSelectedValue, validateInput,
             </Navbar.Brand>
           </Stack>
           <Stack direction="horizontal" gap={5}>
-            <Nav.Link onClick={() => handleNavClick("json")} className="text-light">
+            {/* <Nav.Link onClick={() => handleNavClick("json")} className="text-light">
               Home
             </Nav.Link>
             <Nav.Link onClick={() => handleNavClick("json")} className="text-light">
@@ -67,7 +68,19 @@ function Header({setSelectedValue, validateInput,
             </Nav.Link>
             <Nav.Link onClick={() => handleNavClick("yaml")} className="text-light">
               Yaml Formatter
-            </Nav.Link>
+            </Nav.Link> */}
+            <Link to="/" className="nav-link text-light" onClick={() => handleNavClick("json")}>
+                Home
+            </Link>
+            <Link to="/" className="nav-link text-light" onClick={() => handleNavClick("json")}>
+              Json Formatter
+            </Link>
+            <Link to="/" className="nav-link text-light" onClick={() => handleNavClick("xml")}>
+              Xml Formatter
+            </Link>
+            <Link to="/" className="nav-link text-light" onClick={() => handleNavClick("yaml")}>
+              Yaml Formatter
+            </Link>
             <JsonDropDown validateInput={validateInput} inputPayload={inputPayload} 
                           setFormattedValue={setFormattedValue} isJsonDisabled={isJsonDisabled}
                           setDropDownVal ={setDropDownVal} setLoading={setLoading}/>

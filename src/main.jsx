@@ -1,13 +1,18 @@
 import { StrictMode, useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom"; // ✅ Add this
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "./index.css";
-import Footer from "./components/Footer.jsx";
-import Header from "./components/Header.jsx";
+import Footer from "./Components/Footer.jsx";
+import Header from "./Components/Header.jsx";
 import Body from "./components/Body.jsx";
 import yaml from 'js-yaml';
+import { Routes, Route } from 'react-router-dom';
+import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
+import About from './pages/About.jsx';
+import Contact from './pages/Contact.jsx';
 
 function App() {
   const [formattedValue, setFormattedValue] = useState("");
@@ -63,16 +68,42 @@ function App() {
   
   return (
     <StrictMode>
-      <Header setSelectedValue={setSelectedValue} validateInput={validateInput} 
-              inputPayload={inputPayload} setFormattedValue={setFormattedValue}
-              setDropDownVal={setDropDownVal} setLoading={setLoading}/>
-      <Body validateInput={validateInput} setInputPayload={setInputPayload} 
-            selectedValue={selectedValue} inputPayload={inputPayload}
-            formattedValue={formattedValue} setFormattedValue={setFormattedValue}
-            parsedData={parsedData} setParsedData={setParsedData}
-            showTreeView={showTreeView} setShowTreeView={setShowTreeView}
-            dropDownVal={dropDownVal} loading={loading}/>
-      <Footer />
+      <BrowserRouter>
+        <Header
+          setSelectedValue={setSelectedValue}
+          validateInput={validateInput}
+          inputPayload={inputPayload}
+          setFormattedValue={setFormattedValue}
+          setDropDownVal={setDropDownVal}
+          setLoading={setLoading}
+        />
+        <Routes>
+          {/* Main content route */}
+          <Route path="/" element={
+            <Body
+              validateInput={validateInput}
+              setInputPayload={setInputPayload}
+              selectedValue={selectedValue}
+              inputPayload={inputPayload}
+              formattedValue={formattedValue}
+              setFormattedValue={setFormattedValue}
+              parsedData={parsedData}
+              setParsedData={setParsedData}
+              showTreeView={showTreeView}
+              setShowTreeView={setShowTreeView}
+              dropDownVal={dropDownVal}
+              loading={loading}
+          />
+          } />
+          
+          {/* Footer routes */}
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
+        
+        <Footer />
+      </BrowserRouter>
     </StrictMode>
   );
 }
