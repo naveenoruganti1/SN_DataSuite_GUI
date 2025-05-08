@@ -7,7 +7,7 @@ import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "./index.css";
 import Footer from "./Components/Footer.jsx";
 import Header from "./Components/Header.jsx";
-import Body from "./components/Body.jsx";
+import Body from "./Components/Body.jsx";
 import yaml from 'js-yaml';
 import { Routes, Route } from 'react-router-dom';
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
